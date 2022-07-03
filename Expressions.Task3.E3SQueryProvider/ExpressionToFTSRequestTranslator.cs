@@ -41,15 +41,43 @@ namespace Expressions.Task3.E3SQueryProvider
             switch (node.NodeType)
             {
                 case ExpressionType.Equal:
-                    if (node.Left.NodeType != ExpressionType.MemberAccess)
-                        throw new NotSupportedException($"Left operand should be property or field: {node.NodeType}");
+                    Expression memberAccess = null;
+                    Expression constant = null;
 
-                    if (node.Right.NodeType != ExpressionType.Constant)
-                        throw new NotSupportedException($"Right operand should be constant: {node.NodeType}");
+                    switch (node.Left.NodeType)
+                    {
+                        case ExpressionType.MemberAccess:
+                            memberAccess = node.Left;
+                            break;
 
-                    Visit(node.Left);
+                        case ExpressionType.Constant:
+                            constant = node.Left;
+                            break;
+
+                        default:
+                            throw new NotSupportedException($"Node type not supported (BinaryExpression): {node.Left.NodeType}");
+                    }
+
+                    switch (node.Right.NodeType)
+                    {
+                        case ExpressionType.MemberAccess:
+                            memberAccess = node.Right;
+                            break;
+
+                        case ExpressionType.Constant:
+                            constant = node.Right;
+                            break;
+
+                        default:
+                            throw new NotSupportedException($"Node type not supported (BinaryExpression): {node.Right.NodeType}");
+                    }
+
+                    if (memberAccess is null || constant is null)
+                        throw new NotSupportedException($"MemberAccess and Constant are required for BinaryExpression");
+
+                    Visit(memberAccess);
                     _resultStringBuilder.Append("(");
-                    Visit(node.Right);
+                    Visit(constant);
                     _resultStringBuilder.Append(")");
                     break;
 
