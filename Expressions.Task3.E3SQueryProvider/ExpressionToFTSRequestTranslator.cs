@@ -48,6 +48,30 @@ namespace Expressions.Task3.E3SQueryProvider
                     _resultStringBuilder.Append(")");
 
                     return node;
+
+                case "StartsWith":
+                    Visit(memberExpression);
+                    _resultStringBuilder.Append("(");
+                    Visit(node.Arguments[0]);
+                    _resultStringBuilder.Append("*)");
+
+                    return node;
+
+                case "Contains":
+                    Visit(memberExpression);
+                    _resultStringBuilder.Append("(*");
+                    Visit(node.Arguments[0]);
+                    _resultStringBuilder.Append("*)");
+
+                    return node;
+
+                case "EndsWith":
+                    Visit(memberExpression);
+                    _resultStringBuilder.Append("(*");
+                    Visit(node.Arguments[0]);
+                    _resultStringBuilder.Append(")");
+
+                    return node;
             }
 
             return base.VisitMethodCall(node);
