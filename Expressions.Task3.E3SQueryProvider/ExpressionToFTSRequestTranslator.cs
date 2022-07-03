@@ -33,6 +33,23 @@ namespace Expressions.Task3.E3SQueryProvider
 
                 return node;
             }
+
+            var memberExpression = node.Object as MemberExpression;
+
+            if (memberExpression is null)
+                throw new NotSupportedException("MemberExpression is required for MethodCall");
+
+            switch (node.Method.Name)
+            {
+                case "Equals":
+                    Visit(memberExpression);
+                    _resultStringBuilder.Append("(");
+                    Visit(node.Arguments[0]);
+                    _resultStringBuilder.Append(")");
+
+                    return node;
+            }
+
             return base.VisitMethodCall(node);
         }
 
