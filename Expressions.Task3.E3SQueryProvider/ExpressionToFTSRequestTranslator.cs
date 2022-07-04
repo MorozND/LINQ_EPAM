@@ -114,12 +114,24 @@ namespace Expressions.Task3.E3SQueryProvider
                     }
 
                     if (memberAccess is null || constant is null)
-                        throw new NotSupportedException($"MemberAccess and Constant are required for BinaryExpression");
+                        throw new NotSupportedException($"MemberAccess and Constant are required for BinaryExpression: Equal");
 
                     Visit(memberAccess);
                     _resultStringBuilder.Append("(");
                     Visit(constant);
                     _resultStringBuilder.Append(")");
+                    break;
+
+                case ExpressionType.AndAlso:
+                    _resultStringBuilder.Append("\"statements\": [ ");
+
+                    _resultStringBuilder.Append("{ \"query\":\"");
+                    Visit(node.Left);
+                    _resultStringBuilder.Append("\"}, ");
+
+                    _resultStringBuilder.Append("{ \"query\":\"");
+                    Visit(node.Right);
+                    _resultStringBuilder.Append("\"} ]");
                     break;
 
                 default:
@@ -142,7 +154,6 @@ namespace Expressions.Task3.E3SQueryProvider
 
             return node;
         }
-
         #endregion
     }
 }
